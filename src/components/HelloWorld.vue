@@ -1,151 +1,123 @@
 <template>
-  <v-container>
-    <v-row class="text-center">
-      <v-col cols="12">
-        <v-img
-          :src="require('../assets/logo.svg')"
-          class="my-3"
-          contain
-          height="200"
-        />
-      </v-col>
-
-      <v-col class="mb-4">
-        <h1 class="display-2 font-weight-bold mb-3">
-          Welcome to Vuetify
-        </h1>
-
-        <p class="subheading font-weight-regular">
-          For help and collaboration with other Vuetify developers,
-          <br>please join our online
-          <a
-            href="https://community.vuetifyjs.com"
-            target="_blank"
-          >Discord Community</a>
-        </p>
-      </v-col>
-
-      <v-col
-        class="mb-5"
-        cols="12"
-      >
-        <h2 class="headline font-weight-bold mb-3">
-          What's next?
-        </h2>
-
-        <v-row justify="center">
-          <a
-            v-for="(next, i) in whatsNext"
-            :key="i"
-            :href="next.href"
-            class="subheading mx-3"
-            target="_blank"
-          >
-            {{ next.text }}
-          </a>
-        </v-row>
-      </v-col>
-
-      <v-col
-        class="mb-5"
-        cols="12"
-      >
-        <h2 class="headline font-weight-bold mb-3">
-          Important Links
-        </h2>
-
-        <v-row justify="center">
-          <a
-            v-for="(link, i) in importantLinks"
-            :key="i"
-            :href="link.href"
-            class="subheading mx-3"
-            target="_blank"
-          >
-            {{ link.text }}
-          </a>
-        </v-row>
-      </v-col>
-
-      <v-col
-        class="mb-5"
-        cols="12"
-      >
-        <h2 class="headline font-weight-bold mb-3">
-          Ecosystem
-        </h2>
-
-        <v-row justify="center">
-          <a
-            v-for="(eco, i) in ecosystem"
-            :key="i"
-            :href="eco.href"
-            class="subheading mx-3"
-            target="_blank"
-          >
-            {{ eco.text }}
-          </a>
-        </v-row>
-      </v-col>
-    </v-row>
-  </v-container>
+  
+    <section class="VideoBg">
+    <video autoplay playsinline loop :muted="muted" ref="video">
+      <source src="../assets/timelapse.mp4" type="video/mp4">
+    </video>
+    <div class="VideoBg__content">
+      <slot></slot>
+    <p>Hello this piqjewifjqep]igjqe]pg j</p>
+    </div>
+  </section>
+  
 </template>
 
 <script>
-  export default {
-    name: 'HelloWorld',
+   export default {
+    props: {
+      sources: {
+        type: Array,
+        required: true
+      },
+      img: {
+        type: String
+      },
+      muted: {
+        type: Boolean,
+        default: false
+      }
+    },
 
-    data: () => ({
-      ecosystem: [
-        {
-          text: 'vuetify-loader',
-          href: 'https://github.com/vuetifyjs/vuetify-loader',
-        },
-        {
-          text: 'github',
-          href: 'https://github.com/vuetifyjs/vuetify',
-        },
-        {
-          text: 'awesome-vuetify',
-          href: 'https://github.com/vuetifyjs/awesome-vuetify',
-        },
-      ],
-      importantLinks: [
-        {
-          text: 'Documentation',
-          href: 'https://vuetifyjs.com',
-        },
-        {
-          text: 'Chat',
-          href: 'https://community.vuetifyjs.com',
-        },
-        {
-          text: 'Made with Vuetify',
-          href: 'https://madewithvuejs.com/vuetify',
-        },
-        {
-          text: 'Twitter',
-          href: 'https://twitter.com/vuetifyjs',
-        },
-        {
-          text: 'Articles',
-          href: 'https://medium.com/vuetify',
-        },
-      ],
-      whatsNext: [
-        {
-          text: 'Explore components',
-          href: 'https://vuetifyjs.com/components/api-explorer',
-        },
-        {
-          text: 'Select a layout',
-          href: 'https://vuetifyjs.com/getting-started/pre-made-layouts',
-        },
-        {
-          text: 'Frequently Asked Questions',
-          href: 'https://vuetifyjs.com/getting-started/frequently-asked-questions',
-        },
-      ],
-    }),
+    data () {
+      return {
+        videoRatio: null
+      }
+    },
+
+    mounted () {
+      this.setImageUrl()
+      this.setContainerHeight()
+
+      if (this.videoCanPlay()) {
+        this.$refs.video.oncanplay = () => {
+          if (!this.$refs.video) return
+
+          this.videoRatio = this.$refs.video.videoWidth / this.$refs.video.videoHeight
+          this.setVideoSize()
+          this.$refs.video.style.visibility = 'visible'
+        }
+      }
+
+      window.addEventListener('resize', this.resize)
+    },
+
+    beforeDestroy () {
+      window.removeEventListener('resize', this.resize)
+    },
+
+    methods: {
+      resize () {
+        this.setContainerHeight()
+
+        if (this.videoCanPlay()) {
+          this.setVideoSize()
+        }
+      },
+
+      videoCanPlay () {
+        return !!this.$refs.video.canPlayType
+      },
+
+      setImageUrl () {
+        if (this.img) {
+          this.$el.style.backgroundImage = `url(${this.img})`
+        }
+      },
+
+      setContainerHeight () {
+        this.$el.style.height = `${window.innerHeight}px`
+      },
+
+      setVideoSize () {
+        var width, height, containerRatio = this.$el.offsetWidth / this.$el.offsetHeight
+
+        if (containerRatio > this.videoRatio) {
+          width = this.$el.offsetWidth
+        } else {
+          height = this.$el.offsetHeight
+        }
+
+        this.$refs.video.style.width = width ? `${width}px` : 'auto'
+        this.$refs.video.style.height = height ? `${height}px` : 'auto'
+      },
+
+      getMediaType (src) {
+        return 'video/' + src.split('.').pop()
+      }
+    }
   }
 </script>
+<style>
+  .VideoBg {
+    position: relative;
+    background-size: cover;
+    background-position: center;
+    overflow: hidden;
+  }
+
+  .VideoBg video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    visibility: hidden;
+    transform: translate(-50%, -50%);
+  }
+
+  .VideoBg__content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+</style>
