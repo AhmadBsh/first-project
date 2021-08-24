@@ -5,15 +5,27 @@
       color="deep-purple accent-4"
       dense
       dark
+      fixed
     >
     
-      <v-app-bar-nav-icon>
+      <v-app-bar-nav-icon @click="drawer = true">
       </v-app-bar-nav-icon>
 
       <v-toolbar-title>T-P-T</v-toolbar-title>
 
+    <v-btn icon>
+        <v-icon>mdi-lightbulb-on</v-icon>
+      </v-btn>
       <v-spacer></v-spacer>
-
+      <v-btn rounded text>Home</v-btn>
+      <v-btn rounded text>About </v-btn>
+      <v-btn rounded text>Programming Websites</v-btn>
+      <v-btn rounded text>Hosting Services </v-btn>
+      <v-btn   rounded text>Cloud Storage</v-btn>
+      <v-btn  rounded text>Servers </v-btn>
+      <v-btn rounded text>Contact </v-btn>
+      
+<!-- 
       <v-btn icon>
         <v-icon>mdi-home</v-icon>
       </v-btn>
@@ -23,7 +35,7 @@
 
       <v-btn icon>
         <v-icon>mdi-magnify</v-icon>
-      </v-btn>
+      </v-btn> -->
     </v-app-bar>
   </div>
   </div>
